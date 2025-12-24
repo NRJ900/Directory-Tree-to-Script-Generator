@@ -1,0 +1,30 @@
+{
+  "name": "directory-tree-to-script-generator",
+  "version": "1.0.0",
+  "description": "As AI-powered coding tools and \"vibe coding\" become the standard for rapid development, developers frequently encounter project setups that require specific file and folder structures. Whether it's setting up a new Tauri app, organizing microservices, or implementing a full-stack architecture, manually creating dozens of nested folders and files is tedious and error-prone. This web application solves that friction by instantly converting directory tree visualizations into executable code. Simply paste your project structure (like those commonly provided in AI-generated code templates), select your preferred output format (Python or Command Prompt), and get ready-to-run scripts that create the entire folder hierarchy with proper file extensions and nesting.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NRJ900/Directory-Tree-to-Script-Generator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NRJ900/Directory-Tree-to-Script-Generator/issues"
+  },
+  "homepage": "https://github.com/NRJ900/Directory-Tree-to-Script-Generator#readme",
+  "devDependencies": {
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1"
+  }
+}

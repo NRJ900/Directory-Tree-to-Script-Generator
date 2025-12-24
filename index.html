@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directory Tree to Script Generator - Modernized</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script type="module" src="/src/main.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1>Directory Tree to Script Generator</h1>
+            <p class="app-description">Convert directory tree structures into executable scripts - Now even more
+                powerful!</p>
+        </header>
+
+        <main class="app-main">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="treeInput" class="form-label">Directory Tree Structure</label>
+                    <textarea id="treeInput" class="form-control tree-input"
+                        placeholder="Paste your directory tree here, for example:&#10;&#10;my-project/&#10;├─ frontend/&#10;│   ├─ src/&#10;│   ├─ tauri.conf.json&#10;│   └─ package.json&#10;├─ backend/&#10;│   ├─ main.py&#10;│   ├─ handlers/&#10;│   │   ├─ sample1.py&#10;│   │   ├─ sample2.py&#10;│   │   └─ sample3.py&#10;│   ├─ system/&#10;│   │   ├─ app.py&#10;│   │   └─ example.py&#10;│   └─ requirements.txt&#10;└─ README.md"
+                        rows="18"></textarea>
+                </div>
+
+                <div class="controls">
+                    <div class="form-group">
+                        <label for="outputType" class="form-label">Output Type</label>
+                        <select id="outputType" class="form-control">
+                            <option value="python">Python Script</option>
+                            <option value="bash">Bash/Command Script</option>
+                            <option value="windows">Windows Command Script (.bat)</option>
+                            <option value="powershell">PowerShell Script (.ps1)</option>
+                            <option value="nodejs">Node.js Script (.js)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rootName" class="form-label">Root Directory Name</label>
+                        <input type="text" id="rootName" class="form-control" placeholder="my-project">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="templateSelect" class="form-label">Project Templates</label>
+                        <select id="templateSelect" class="form-control">
+                            <option value="">-- Select a Template --</option>
+                            <option value="tauri">Tauri App (Full Stack)</option>
+                            <option value="nextjs">Next.js (App Router)</option>
+                            <option value="fastapi">FastAPI + MongoDB</option>
+                            <option value="python_pkg">Python Package</option>
+                            <option value="vite_vanilla">Vite Vanilla JS</option>
+                        </select>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="generateBtn" class="btn btn--primary">Generate Script</button>
+                        <button id="clearBtn" class="btn btn--secondary">Clear All</button>
+                        <button id="loadExampleBtn" class="btn btn--outline">Load Example</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="output-header">
+                    <h3>Generated Script</h3>
+                    <div class="output-actions">
+                        <button id="aiOptimizeBtn" class="btn btn--outline btn--sm"
+                            title="Copy structure as AI prompt">AI Optimizer</button>
+                        <button id="copyBtn" class="btn btn--outline btn--sm" disabled>Copy Script</button>
+                        <button id="downloadBtn" class="btn btn--outline btn--sm" disabled>Download Script</button>
+                        <button id="downloadZipBtn" class="btn btn--primary btn--sm">Download ZIP</button>
+                    </div>
+                </div>
+
+                <div class="output-container">
+                    <pre id="outputCode"
+                        class="output-code"><code class="language-python">Click "Generate Script" to see the output here...</code></pre>
+                </div>
+
+                <div class="preview-section">
+                    <h4>Directory Structure Preview</h4>
+                    <div id="structurePreview" class="structure-preview">
+                        Parse input to see structure preview...
+                    </div>
+                    <div id="statsDashboard" class="stats-container"></div>
+                </div>
+            </div>
+        </main>
+
+        <div id="statusMessage" class="status-message hidden"></div>
+
+        <footer class="app-footer">
+            <div class="help-section">
+                <h4>Why I Built this?</h4>
+                <ul>As AI-powered coding tools and "vibe coding" become the standard for rapid development, developers
+                    frequently encounter project setups that require specific file and folder structures. Whether it's
+                    setting up a new Tauri app, organizing microservices, or implementing a full-stack architecture,
+                    manually creating dozens of nested folders and files is tedious and error-prone.
+
+                    This web application solves that friction by instantly converting directory tree visualizations into
+                    executable code. Simply paste your project structure (like those commonly provided in AI-generated
+                    code templates), select your preferred output format (Python or Command Prompt), and get
+                    ready-to-run scripts that create the entire folder hierarchy with proper file extensions and
+                    nesting.</ul>
+            </div>
+
+            <div class="info-box">
+                <strong>Perfect for:</strong> Full-stack developers, AI-assisted coding workflows, rapid prototyping,
+                project template implementation, and team standardization.
+            </div>
+
+
+
+            <div style="border-bottom: 1px solid gray;">
+
+            </div>
+
+
+            <div class="help-section">
+                <h4>How to Use</h4>
+                <ul>
+                    <li>Paste your directory tree structure in the input area</li>
+                    <li>Supports tree characters like ├──, │, └── and simple indentation</li>
+                    <li>Files are identified by extensions (.py, .json, etc.)</li>
+                    <li>The parser now correctly maintains directory hierarchy</li>
+                    <li>Files will be placed in their proper nested locations</li>
+                    <li>Select your preferred output format and click Generate</li>
+                </ul>
+            </div>
+
+            <div class="example-section">
+                <h4>Bug Fixes</h4>
+                <div class="example-comparison">
+                    <div class="example-before">
+                        <h5>❌ Previous Bug:</h5>
+                        <code>
+                            Unable to generate desired files in Windows Command Script and Bash/Command Script.
+                        </code>
+                    </div>
+                    <div class="example-after">
+                        <h5>✅ Now Fixed:</h5>
+                        <code>
+                            Fixed a bug in generating Windows Command Script Generation<br>
+                            Fixed a bug in generating Bash/Command Script Generation<br>
+                            
+                        </code>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-batch.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <footer class="info-footer">
+        <p>© 2025 Built by <a href="https://github.com/NRJ900" target="_blank" rel="noopener noreferrer">
+                Github.com/NRJ900</a></p>
+        </p>
+    </footer>
+
+</body>
+
+</html>
