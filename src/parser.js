@@ -44,20 +44,20 @@ export class DirectoryTreeParser {
 
                 // If first entry is not at level 0, treat it as root
                 if (level === 0 && !isFile) {
-                    const dirName = name.endsWith('/') ? name.slice(0, -1) : name;
+                    const dirName = name.replace(/^\/+|\/+$/g, '');
 
                     // Only consider it a wrapper if it's the ONLY top-level item
                     // We'll verify this at the end of the loop or track top-level items
                     // For now, let's just track it.
                     this.directories.add(dirName);
-                    directoryStack.push(dirName);
+                    directoryStack.push({ name: dirName, level: level }); // Fix: Store object
 
                     // We optimistically set it to true, but we need to invalidate it if we see another level 0 item later
                     hasRootWrapper = true;
 
                     // ADDED: Ensure the root wrapper is part of the structure for preview
                     this.structure.push({
-                        name: name,
+                        name: dirName,
                         level: level,
                         isFile: false,
                         fullPath: dirName,
@@ -68,17 +68,17 @@ export class DirectoryTreeParser {
                 }
             }
 
-            // Adjust directory stack based on current indentation level
-            // Pop directories until stack size matches current level
-            while (directoryStack.length > level) {
+
+
+            while (directoryStack.length > 0 && directoryStack[directoryStack.length - 1].level >= level) {
                 directoryStack.pop();
             }
 
             if (isFile) {
                 // Build full path for file using current directory stack
-                const filePath = directoryStack.length > 0
-                    ? `${directoryStack.join('/')}/${name}`
-                    : name;
+                const dirPath = directoryStack.map(d => d.name).join('/');
+                const filePath = dirPath ? `${dirPath}/${name}` : name;
+
                 this.files.add(filePath);
 
                 this.structure.push({
@@ -89,7 +89,6 @@ export class DirectoryTreeParser {
                     content: content
                 });
 
-                // Add to files set as an object if it has content
                 if (content) {
                     this.files.add({ path: filePath, content: content });
                 } else {
@@ -97,29 +96,24 @@ export class DirectoryTreeParser {
                 }
             } else {
                 // Handle directory
-                const dirName = name.endsWith('/') ? name.slice(0, -1) : name;
-                const dirPath = directoryStack.length > 0
-                    ? `${directoryStack.join('/')}/${dirName}`
-                    : dirName;
+                const dirName = name.replace(/^\/+|\/+$/g, '');
 
-                this.directories.add(dirPath);
+                // Add to stack first to build path? 
+                // No, stack represents parents. This dir is not its own parent.
 
-                // Add this directory to the stack for subsequent items
-                if (directoryStack.length === level) {
-                    directoryStack.push(dirName);
-                } else {
-                    // Ensure stack is at correct level
-                    while (directoryStack.length > level) {
-                        directoryStack.pop();
-                    }
-                    directoryStack.push(dirName);
-                }
+                const parentPath = directoryStack.map(d => d.name).join('/');
+                const fullDirPath = parentPath ? `${parentPath}/${dirName}` : dirName;
+
+                this.directories.add(fullDirPath);
+
+                // Push self to stack for children
+                directoryStack.push({ name: dirName, level: level });
 
                 this.structure.push({
-                    name: name,
+                    name: dirName,
                     level: level,
                     isFile: false,
-                    fullPath: dirPath
+                    fullPath: fullDirPath
                 });
 
                 // If we encounter another level 0 item (file or dir) after the first one, it's not a single root wrapper
