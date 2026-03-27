@@ -3,12 +3,4 @@
   "outputDirectory": "dist",
   "devCommand": "npm run dev",
   "framework": "vite",
-
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "https://nrj900.me/projects/directory-tree-script",
-      "permanent": true
-    }
-  ]
 }
